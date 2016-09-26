@@ -1,0 +1,130 @@
+\documentclass[aps,showpacs,twocolumn,floats,prd,superscriptaddress,nofootinbib]{revtex4-1} 
+\usepackage{graphicx,amsmath,amssymb,amstext}
+\usepackage{amssymb,amsbsy,amsfonts,amsthm,color}
+\usepackage{epsfig}
+%\usepackage{showkeys}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{sidecap}
+\usepackage{floatrow}
+\graphicspath{{Figures/}}
+
+\begin{document}
+
+\title{Constraints on generic non-adiabatic modes}
+
+\author{Darsh Kodwani}
+\email{dkodwani@physics.utoronto.ca}
+\affiliation{Canadian Institute of Theoretical Astrophysics, 60 St George St, Toronto, ON M5S 3H8, Canada.}
+\affiliation{University of Toronto, Department of Physics, 60 St George St, Toronto, ON M5S 3H8, Canada.}
+
+\author{Daniel Meerburg}
+\email{meerburg@cita.utoronto.ca}
+\affiliation{Canadian Institute of Theoretical Astrophysics, 60 St George St, Toronto, ON M5S 3H8, Canada.}
+
+\author{Ue-Li Pen}
+\email{pen@cita.utoronto.ca}
+\affiliation{Canadian Institute of Theoretical Astrophysics, 60 St George St, Toronto, ON M5S 3H8, Canada.}
+\affiliation{Canadian Institute for Advanced Research, CIFAR program in Gravitation and Cosmology.}
+\affiliation{Dunlap Institute for Astronomy \& Astrophysics, University of Toronto, AB 120-50 St. George Street, Toronto, ON M5S 3H4, Canada.}
+\affiliation{Perimeter Institute of Theoretical Physics, 31 Caroline Street North, Waterloo, ON N2L 2Y5, Canada.}
+
+\author{I-Sheng Yang}
+
+\email{isheng.yang@gmail.com}
+\affiliation{Canadian Institute of Theoretical Astrophysics, 60 St George St, Toronto, ON M5S 3H8, Canada.}
+\affiliation{Perimeter Institute of Theoretical Physics, 31 Caroline Street North, Waterloo, ON N2L 2Y5, Canada.}
+
+\begin{abstract}
+
+In this paper we attempt to find the information stored in each mode of the power spectrum using a Fisher information kernel as is described in \cite{Gauthier-Bucher}.
+
+\end{abstract}
+
+\maketitle
+
+
+\onecolumngrid
+
+\section{Introduction and Summary}
+
+We observe a nearly scale invariant spectrum of fluctuations in the temperature across the sky. Inflation is regarded as the best theory that explains how primordial fluctuations were produced and then set as the initial conditions during the radiation dominated era. The initial conditions set up by most simple inflation models are \emph{adiabatic} which means that the ratio of different particle species abundances would be constant across space. This assumption is usually very good if we take different parts of the universe as having the same history. In general, however, there is no reason to believe that the abundance ratios are the same everywhere. The perturbations caused by varying abundances of species are termed \emph{isocurvature}. 
+\\
+\\
+There are two different regimes when it comes to the evolution of the density perturbations: 
+
+\begin{itemize}
+
+\item When the wavelength of the perturbation mode $\lambda$ is smaller than the cosmological horizon $H^{-1}$ and were causal physics can effect the mode.
+
+\item When $\lambda> H^{-1}$ and the mode is out of the horizon so no causal physics can effect it.
+
+\end{itemize}
+
+Perturbation modes are inside the horizon at times much later than the matter-radiation equality. These modes correspond to density perturbations that evolve according to Newtonian gravity. The interesting regime is at very early times when the modes have not entered the cosmological horizon. It is in this regime that there are the two orthogonal perturbations; adiabatic and isocurvature. 
+%
+%\begin{itemize}
+%
+%\item Change the value of $\mathcal{R}_\nu$ etc in the isocurvature initial conditions (so that its different from standard isocurvature IC, see $http://journals.aps.org/prd/pdf/10.1103/PhysRevD.86.023002$.)
+%
+%\item Produce the power spectrum... i.e the Cl's 
+%
+%\item use Cl's as input from Fisher forecast by writing the CMB power spectra as
+%
+%\begin{equation}
+%	C_l = (1 - \alpha) C^{ad}_l + \alpha C^{iso}_l + 2 \beta \sqrt{\alpha (1 - \alpha)} C^{cross}_l
+%\end{equation}
+%
+%taken from $http://journals.aps.org/prd/pdf/10.1103/PhysRevD.86.023002$.
+%
+%as in $PHYSICAL REVIEW D 74, 063503 (2006)$. Here $\alpha$ accounts for the isocurvature amplitude, while $\beta$ stands for the isocurvature correlation phase, given by $\beta = \cos \theta, -1 \leq \cos \theta \leq 1$. 
+%
+%\item Do a fisher forecast using
+%
+%\begin{equation}
+%F_{ij} = \sum_l \sum_{XY} \frac{\partial C_l^X}{\partial p_i} (Cov^{-1}_l)_{XY} \frac{\partial C^Y_l}{\partial p_j}
+%\end{equation}
+
+\section{Fisher forecasting}
+
+The likelihood we are interested in is
+
+\begin{equation}
+	-\ln L = \frac{f_{sky}}{2} \sum_{l = 2}^{l_{max}} (2l + 1) \left( tr \left( \frac{\vec{C}_l^{(obs)}}{\vec{C}^{(th)}_l + \vec{N}_l} \right) - \ln \det \left( \frac{\vec{C}_l^{(obs)}}{\vec{C}_l^{(th)} + \vec{N}_l} \right) - 3 \right)
+\end{equation}
+
+where 
+
+\begin{equation}
+	\vec{C}_l = \begin{pmatrix} C_l^{TT} & C_l^{TE} \\ C_l^{ET} & C_l^{EE} \end{pmatrix}
+\end{equation}
+
+and the noise matrix is
+
+\begin{equation}
+	\vec{N}_l = \begin{pmatrix} N^{TT}_l & 0 \\ 0 & N^{PP}_l \end{pmatrix}
+\end{equation}
+
+where
+
+\begin{equation}
+	N^{TT/PP}_l = [(\omega_{T/P} B_l^2)_{100} + (\omega_{T/P} B_l)^2_{113} + (\omega_{T/P} B_l^2)_{217} + (\omega_{T/P} B_l^2)_{353}]^{-1}
+\end{equation}
+
+where 
+
+\begin{eqnarray}
+	B_l^2 = exp[-l(l+1)\theta_{beam}^2 / 8 \ln 2]
+\end{eqnarray}
+
+\begin{equation}
+	w = (\theta_{beam} \sigma)^{-2}
+\end{equation}
+
+\section{Discussion}
+ 
+ 
+\bibliography{all_active}
+
+
+\end{document}
