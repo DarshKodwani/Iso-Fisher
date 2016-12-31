@@ -143,11 +143,11 @@
 
     lnrat = log(k/P%k_0_scalar)
     !Darsh 2016: Adding power at given k
-    if(P%kprime - 0.00005 < k .and. k < P%kprime + 0.00005) then 
+    if((P%kprime)*(1.d0-0.1)  < k .and. k < (1.d0+0.1)*(P%kprime) ) then 
     !if(P%kprime .eq. k) then 
         ScalarPower=P%ScalarPowerAmp(ix)*(1.d0 + P%epsAmp) &
             *exp(lnrat*( P%an(ix)-1 + lnrat*(P%n_run(ix)/2 + P%n_runrun(ix)/6*lnrat)))
-            !print *, 'I have added the power'
+            print *, 'I have added the power', k
     !else if(P%jprime - 0.00005 < k .and. k < P%jprime + 0.00005) then 
         !ScalarPower=P%ScalarPowerAmp(ix)*(1.d0 + P%epsAmp) &
             !*exp(lnrat*( P%an(ix)-1 + lnrat*(P%n_run(ix)/2 + P%n_runrun(ix)/6*lnrat)))        

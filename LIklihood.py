@@ -22,9 +22,25 @@ sys.path.insert(0,os.path.realpath(os.path.join(os.getcwd(),'..')))
 # Defining the noise paramaters - all quantities taken from the paper given above Table VII - we only take the 143 GHz channel
 
 thetaarcmin = 7.1
+thetaarcmin100 = 9.5
+thetaarcmin217 = 5.0
+thetaarcmin353 = 5.0
 thetarad = thetaarcmin/3437.75
+thetarad100 = thetaarcmin100/3437.75
+thetarad217 = thetaarcmin217/3437.75
+thetarad353 = thetaarcmin353/3437.75
+
+
 sigmaT = 6.0016*(10**(-6))
+sigmaT100 = 6.82*(10**(-6))
+sigmaT217 = 13.0944*(10**(-6))
+sigmaT353 = 40.1016*(10**(-6))
+
 sigmaP = 11.4576*(10**(-6))
+sigmaP100 = 10.9120*(10**(-6))
+sigmaP217 = 26.7644*(10**(-6))
+sigmaP353 = 81.2944*(10**(-6))
+
 
 
 def dnoise(l):
@@ -32,6 +48,21 @@ def dnoise(l):
     
 def dnoiseP(l):
     return ((thetaarcmin*sigmaP)**2)*np.exp(l*(l+1)*thetarad**2/(8*np.log(2)))
+
+
+
+#def dnoise(l):
+#    return ( ((thetaarcmin*sigmaT)**(-2))*np.exp(-l*(l+1)*(thetarad**2)/(8*np.log(2)))
+#    + ((thetaarcmin100*sigmaT100)**(-2))*np.exp(-l*(l+1)*(thetarad100**2)/(8*np.log(2)))
+#    + ((thetaarcmin217*sigmaT217)**(-2))*np.exp(-l*(l+1)*(thetarad217**2)/(8*np.log(2)))
+#    + ((thetaarcmin353*sigmaT353)**(-2))*np.exp(-l*(l+1)*(thetarad353**2)/(8*np.log(2))))**(-1)
+#    
+#def dnoiseP(l):
+#    return (  ((thetaarcmin*sigmaP)**(-2))*np.exp(-l*(l+1)*(thetarad**2)/(8*np.log(2)))
+#    + ((thetaarcmin100*sigmaP)**(-2))*np.exp(-l*(l+1)*(thetarad100**2)/(8*np.log(2)))
+#    + ((thetaarcmin217*sigmaP217)**(-2))*np.exp(-l*(l+1)*(thetarad217**2)/(8*np.log(2)))
+#    + ((thetaarcmin353*sigmaP353)**(-2))*np.exp(-l*(l+1)*(thetarad353**2)/(8*np.log(2))))**(-1)
+#    
     
 # 2) Setting up CAMB to obtain the C_ls
 
@@ -40,8 +71,9 @@ pars = camb.CAMBparams()
 
 # Here we set the initial condition for the Fluctuations. 0,1,2,3,4,5 follow same notation as CAMB the different types of fluctuations. 
  
-pars.scalar_initial_condition = 1
-pars.InitialConditionVector = (1.,1.,1., 1., 1., 0., 0., 0., 0.)
+pars.scalar_initial_condition = 0
+
+pars.InitialConditionVector = (0.,0.,0., 0., 1., 0., 0., 0., 0.)
 
 #epsX here is the amplitude of the power we are adding to the power spectrum at a given k and kXpivot is the initial k 
 pars.InitPower.set_params(ns=0.965, r=0, kXpivot= 0, epsX = 0)
@@ -62,16 +94,16 @@ lmax = 2000
 
 #Setting up intial ks
 
-ksmin = 2
-ksmax = 1
+ksmin = 0.0001
+ksmax = 0.1
 numks = 100
 xs = np.linspace(ksmin,ksmax,numks)
-ks = 10**(-xs)
+ks = xs
 Allcls = np.zeros((lmax+1, numks))
 AllclsEE = np.zeros((lmax+1, numks))
 AllclsBB = np.zeros((lmax+1,numks))
 AllclsTE = np.zeros((lmax+1, numks))
-epspower = 10**(-6)
+epspower = 10**(-1)
 
 #The adiabtic, unmodified, C_ls 
 
