@@ -3,6 +3,7 @@ import sys, platform, os
 from astropy.io import fits
 from matplotlib import pyplot as plt
 import numpy as np
+from matplotlib import colors, ticker
 import matplotlib.cm as cm
 #uncomment this if you are running remotely and want to keep in synch with repo changes
 #if platform.system()!='Windows':
@@ -42,27 +43,25 @@ sigmaP217 = 26.7644*(10**(-6))
 sigmaP353 = 81.2944*(10**(-6))
 
 
-
-def dnoise(l):
-    return ((thetaarcmin*sigmaT)**2)*np.exp(l*(l+1)*thetarad**2/(8*np.log(2)))
-    
-def dnoiseP(l):
-    return ((thetaarcmin*sigmaP)**2)*np.exp(l*(l+1)*thetarad**2/(8*np.log(2)))
-
-
-
+#
 #def dnoise(l):
-#    return ( ((thetaarcmin*sigmaT)**(-2))*np.exp(-l*(l+1)*(thetarad**2)/(8*np.log(2)))
-#    + ((thetaarcmin100*sigmaT100)**(-2))*np.exp(-l*(l+1)*(thetarad100**2)/(8*np.log(2)))
-#    + ((thetaarcmin217*sigmaT217)**(-2))*np.exp(-l*(l+1)*(thetarad217**2)/(8*np.log(2)))
-#    + ((thetaarcmin353*sigmaT353)**(-2))*np.exp(-l*(l+1)*(thetarad353**2)/(8*np.log(2))))**(-1)
+#    return ((thetaarcmin*sigmaT)**2)*np.exp(l*(l+1)*thetarad**2/(8*np.log(2)))
 #    
 #def dnoiseP(l):
-#    return (  ((thetaarcmin*sigmaP)**(-2))*np.exp(-l*(l+1)*(thetarad**2)/(8*np.log(2)))
-#    + ((thetaarcmin100*sigmaP)**(-2))*np.exp(-l*(l+1)*(thetarad100**2)/(8*np.log(2)))
-#    + ((thetaarcmin217*sigmaP217)**(-2))*np.exp(-l*(l+1)*(thetarad217**2)/(8*np.log(2)))
-#    + ((thetaarcmin353*sigmaP353)**(-2))*np.exp(-l*(l+1)*(thetarad353**2)/(8*np.log(2))))**(-1)
-#    
+#    return ((thetaarcmin*sigmaP)**2)*np.exp(l*(l+1)*thetarad**2/(8*np.log(2)))
+
+def dnoise(l):
+    return ( ((thetaarcmin*sigmaT)**(-2))*np.exp(-l*(l+1)*(thetarad**2)/(8*np.log(2)))
+    + ((thetaarcmin100*sigmaT100)**(-2))*np.exp(-l*(l+1)*(thetarad100**2)/(8*np.log(2)))
+    + ((thetaarcmin217*sigmaT217)**(-2))*np.exp(-l*(l+1)*(thetarad217**2)/(8*np.log(2)))
+    + ((thetaarcmin353*sigmaT353)**(-2))*np.exp(-l*(l+1)*(thetarad353**2)/(8*np.log(2))))**(-1)
+    
+def dnoiseP(l):
+    return (  ((thetaarcmin*sigmaP)**(-2))*np.exp(-l*(l+1)*(thetarad**2)/(8*np.log(2)))
+    + ((thetaarcmin100*sigmaP)**(-2))*np.exp(-l*(l+1)*(thetarad100**2)/(8*np.log(2)))
+    + ((thetaarcmin217*sigmaP217)**(-2))*np.exp(-l*(l+1)*(thetarad217**2)/(8*np.log(2)))
+    + ((thetaarcmin353*sigmaP353)**(-2))*np.exp(-l*(l+1)*(thetarad353**2)/(8*np.log(2))))**(-1)
+    
     
 # 2) Setting up CAMB to obtain the C_ls
 
@@ -71,7 +70,7 @@ pars = camb.CAMBparams()
 
 # Here we set the initial condition for the Fluctuations. 0,1,2,3,4,5 follow same notation as CAMB the different types of fluctuations. 
  
-pars.scalar_initial_condition = 0
+pars.scalar_initial_condition = 1
 
 pars.InitialConditionVector = (0.,0.,0., 0., 1., 0., 0., 0., 0.)
 
@@ -94,8 +93,8 @@ lmax = 2000
 
 #Setting up intial ks
 
-ksmin = 0.0001
-ksmax = 0.1
+ksmin = 10**(-2)
+ksmax = 2*10**(-1)
 numks = 100
 xs = np.linspace(ksmin,ksmax,numks)
 ks = xs
@@ -131,7 +130,7 @@ for k in ks:
     plt.loglog(np.arange(lmax+1),cl[:,0])
 
 plt.xlim([2,lmax])
-plt.legend(ks, loc='lower right');'''''' 
+#plt.legend(ks, loc='lower right');'''''' 
 
 
 # 3) Computing the fisher info kernel
@@ -152,17 +151,23 @@ for k in ks:
             + ((Unmodcls[i,0] - Allcls[i, countrealb])*(Unmodcls[i,1] - AllclsEE[i, countreala])*(((Norm*Unmod_ad_totCl[i,4])**2 - (Norm*Unmod_ad_totCl[i,2] + dnoiseP(i))*(Norm*Unmod_ad_totCl[i,1]+ dnoise(i)))**2))
             - (Unmodcls[i,0] - Allcls[i, countreala])*(Unmodcls[i,3] - AllclsTE[i, countrealb])*((2*(Norm*Unmod_ad_totCl[i,2]+ dnoiseP(i))*(Norm*Unmod_ad_totCl[i,4]))/(((Norm*Unmod_ad_totCl[i,4])**2 - (Norm*Unmod_ad_totCl[i,2]+ dnoiseP(i))*(Norm*Unmod_ad_totCl[i,1]+ dnoise(i)))**2))
             - (Unmodcls[i,0] - Allcls[i, countrealb])*(Unmodcls[i,3] - AllclsTE[i, countreala])*((2*(Norm*Unmod_ad_totCl[i,2]+ dnoiseP(i))*(Norm*Unmod_ad_totCl[i,4]))/(((Norm*Unmod_ad_totCl[i,4])**2 - (Norm*Unmod_ad_totCl[i,2]+ dnoiseP(i))*(Norm*Unmod_ad_totCl[i,1]+ dnoise(i)))**2))
-            + (Unmodcls[i,1] - AllclsEE[i, countreala])*(Unmodcls[i,1] - AllclsEE[i, countrealb])*(((Norm*Unmod_ad_totCl[i,1] + + dnoise(i))/((Norm*Unmod_ad_totCl[i,4])**2 - (Norm*Unmod_ad_totCl[i,2] + + dnoiseP(i))*(Norm*Unmod_ad_totCl[i,1] + + dnoiseP(i))))**2)
-            - (Unmodcls[i,1] - AllclsEE[i, countreala])*((Unmodcls[i,3] - AllclsTE[i, countrealb]))*((2*(Norm*Unmod_ad_totCl[i,4])*(Norm*Unmod_ad_totCl[i,1]+ + dnoise(i)))/(((Norm*Unmod_ad_totCl[i,4])**2 - (Norm*Unmod_ad_totCl[i,2] + + dnoiseP(i))*(Norm*Unmod_ad_totCl[i,1] + + dnoise(i)))**2))
-            - (Unmodcls[i,1] - AllclsEE[i, countrealb])*((Unmodcls[i,3] - AllclsTE[i, countreala]))*((2*(Norm*Unmod_ad_totCl[i,4])*(Norm*Unmod_ad_totCl[i,1]+ + dnoise(i)))/(((Norm*Unmod_ad_totCl[i,4])**2 - (Norm*Unmod_ad_totCl[i,2] + + dnoiseP(i))*(Norm*Unmod_ad_totCl[i,1] + + dnoise(i)))**2))
-            + (Unmodcls[i,3] - AllclsTE[i, countreala])*(Unmodcls[i,3] - AllclsTE[i, countrealb])*((2*((Norm*Unmod_ad_totCl[i,4])**2 - (Norm*Unmod_ad_totCl[i,2]+ + dnoiseP(i))*(Norm*Unmod_ad_totCl[i,1] + + dnoise(i))))/((Norm*Unmod_ad_totCl[i,4]**2 - (Norm*Unmod_ad_totCl[i,2]+ dnoiseP(i))*(Norm*Unmod_ad_totCl[i,1]+ dnoise(i))))))
+            + (Unmodcls[i,1] - AllclsEE[i, countreala])*(Unmodcls[i,1] - AllclsEE[i, countrealb])*(((Norm*Unmod_ad_totCl[i,1] + dnoise(i))/((Norm*Unmod_ad_totCl[i,4])**2 - (Norm*Unmod_ad_totCl[i,2] + dnoiseP(i))*(Norm*Unmod_ad_totCl[i,1] + + dnoiseP(i))))**2)
+            - (Unmodcls[i,1] - AllclsEE[i, countreala])*((Unmodcls[i,3] - AllclsTE[i, countrealb]))*((2*(Norm*Unmod_ad_totCl[i,4])*(Norm*Unmod_ad_totCl[i,1] + dnoise(i)))/(((Norm*Unmod_ad_totCl[i,4])**2 - (Norm*Unmod_ad_totCl[i,2] + dnoiseP(i))*(Norm*Unmod_ad_totCl[i,1] + dnoise(i)))**2))
+            - (Unmodcls[i,1] - AllclsEE[i, countrealb])*((Unmodcls[i,3] - AllclsTE[i, countreala]))*((2*(Norm*Unmod_ad_totCl[i,4])*(Norm*Unmod_ad_totCl[i,1]+ dnoise(i)))/(((Norm*Unmod_ad_totCl[i,4])**2 - (Norm*Unmod_ad_totCl[i,2] + dnoiseP(i))*(Norm*Unmod_ad_totCl[i,1] +dnoise(i)))**2))
+            + (Unmodcls[i,3] - AllclsTE[i, countreala])*(Unmodcls[i,3] - AllclsTE[i, countrealb])*((2*((Norm*Unmod_ad_totCl[i,4])**2 - (Norm*Unmod_ad_totCl[i,2]+ dnoiseP(i))*(Norm*Unmod_ad_totCl[i,1] + dnoise(i))))/((Norm*Unmod_ad_totCl[i,4]**2 - (Norm*Unmod_ad_totCl[i,2]+ dnoiseP(i))*(Norm*Unmod_ad_totCl[i,1]+ dnoise(i))))))
             xtemp1.append(tempd1)
         FFReal[countreala, countrealb] = sum(xtemp1)/(4*epspower)
         countrealb += 1
     countreala += 1
 
-    
+     
 plt.figure()
-CS = plt.contourf(ks, ks, FFReal,cmap = plt.cm.bone)
+#CS = plt.contour(ks, ks, FFReal,cmap = plt.cm.bone, locator=ticker.LogLocator())
+CS = plt.contour(ks, ks, FFReal,50, cmap = plt.cm.bone)
 cbar = plt.colorbar(CS)
+plt.title('Fisher information $I(k_1, k_2)$')
+plt.ylabel('$k_1$ ($Mpc^{-1}$)')
+plt.xlabel('$k_2$ ($Mpc^{-1}$)')
+plt.yscale('log')
+plt.xscale('log')
 plt.show()
